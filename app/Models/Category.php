@@ -35,4 +35,19 @@ class Category extends Model
     {
         return $this->hasMany(Location::class)->where('is_active', true);
     }
+
+    public function getNamaAttribute(): string
+    {
+        return $this->name ?? '';
+    }
+
+    public function getWarnaAttribute(): string
+    {
+        return $this->icon_color ?? '#3B82F6';
+    }
+
+    public function getUrutanAttribute(): int
+    {
+        return (int) $this->sort_order;
+    }
 }

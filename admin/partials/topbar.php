@@ -1,10 +1,10 @@
 <?php
 $page_titles = [
     'dashboard.php' => 'Dashboard Ringkasan',
-    'kelola.php'    => 'Kelola Data Destinasi',
-    'tambah.php'    => 'Tambah Destinasi Baru',
-    'edit.php'      => 'Edit Data Destinasi',
-    'kategori.php'  => 'Kelola Kategori Wisata'
+    'kelola.php' => 'Kelola Data Destinasi',
+    'tambah.php' => 'Tambah Destinasi Baru',
+    'edit.php' => 'Edit Data Destinasi',
+    'kategori.php' => 'Kelola Kategori Wisata',
 ];
 $active_title = $page_titles[basename($_SERVER['PHP_SELF'])] ?? 'Panel Administrator';
 ?>

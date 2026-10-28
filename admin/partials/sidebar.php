@@ -1,10 +1,11 @@
 <?php
 $current_page = basename($_SERVER['PHP_SELF']);
-function navActive($pages, $current) {
-    return in_array($current, (array)$pages) ? 'active' : '';
+function navActive($pages, $current)
+{
+    return in_array($current, (array) $pages) ? 'active' : '';
 }
 $disp_name = $_SESSION['admin_user']['nama_lengkap'] ?? $_SESSION['admin_nama'] ?? 'Administrator';
-$disp_role = $_SESSION['admin_user']['role_label'] ?? (!empty($_SESSION['admin_wilayah']) && $_SESSION['admin_wilayah'] !== 'Seluruh Kabupaten Ciamis' ? 'Staff Kec. ' . $_SESSION['admin_wilayah'] : 'Super Administrator');
+$disp_role = $_SESSION['admin_user']['role_label'] ?? (! empty($_SESSION['admin_wilayah']) && $_SESSION['admin_wilayah'] !== 'Seluruh Kabupaten Ciamis' ? 'Staff Kec. '.$_SESSION['admin_wilayah'] : 'Super Administrator');
 $avatar_initial = strtoupper(substr($disp_name, 0, 1));
 ?>
 <aside class="admin-sidebar">
@@ -26,7 +27,7 @@ $avatar_initial = strtoupper(substr($disp_name, 0, 1));
     </a>
 
     <div class="nav-group-label" style="margin-top:14px">Manajemen Destinasi</div>
-    <a href="/ulinkaciamis/admin/kelola.php" class="nav-item <?= navActive(['kelola.php','edit.php'], $current_page) ?>">
+    <a href="/ulinkaciamis/admin/kelola.php" class="nav-item <?= navActive(['kelola.php', 'edit.php'], $current_page) ?>">
       <i class="fas fa-map-location-dot"></i>
       <span>Data Destinasi</span>
     </a>

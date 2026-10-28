@@ -1,108 +1,181 @@
 <?php
 
+use App\Http\Controllers\Api\DestinationController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Dashboard\CategoryController;
+use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\Dashboard\LocationController;
+use App\Http\Controllers\MapController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-// Halaman Utama
-Route::get('/', function () {
-    require base_path('index.php');
-    return '';
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
+
+// Halaman Peta & Eksplorasi Publik
+Route::get('/', [MapController::class, 'index'])->name('home');
+Route::get('/ulinkaciamis', [MapController::class, 'index']);
+Route::get('/ulinkaciamis/', [MapController::class, 'index']);
+
+// API Destinasi & Kategori
+Route::get('/api/destinasi', [DestinationController::class, 'index'])->name('api.destinasi');
+Route::any('/api/destinasi.php', [DestinationController::class, 'index']);
+Route::any('/ulinkaciamis/api/destinasi.php', [DestinationController::class, 'index']);
+Route::any('/ulinkaciamis/api/destinasi', [DestinationController::class, 'index']);
+
+Route::get('/api/kategori', [DestinationController::class, 'categories'])->name('api.kategori');
+Route::any('/api/kategori.php', [DestinationController::class, 'categories']);
+Route::any('/ulinkaciamis/api/kategori.php', [DestinationController::class, 'categories']);
+Route::any('/ulinkaciamis/api/kategori', [DestinationController::class, 'categories']);
+
+/*
+|--------------------------------------------------------------------------
+| Authentication Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/admin/logout', [LoginController::class, 'logout']);
+Route::get('/admin/logout.php', [LoginController::class, 'logout']);
+
+// Aliases for legacy subfolder logins
+Route::get('/ulinkaciamis/login', [LoginController::class, 'showLoginForm']);
+Route::post('/ulinkaciamis/login', [LoginController::class, 'login']);
+Route::get('/ulinkaciamis/admin/login.php', [LoginController::class, 'showLoginForm']);
+Route::post('/ulinkaciamis/admin/login.php', [LoginController::class, 'login']);
+Route::get('/admin/login.php', [LoginController::class, 'showLoginForm']);
+Route::post('/admin/login.php', [LoginController::class, 'login']);
+
+/*
+|--------------------------------------------------------------------------
+| Administrator Dashboard & Management (Protected)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth')->group(function () {
+    // Dashboard
+    Route::get('/admin', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/admin/dashboard', [DashboardController::class, 'index']);
+    Route::get('/admin/dashboard.php', [DashboardController::class, 'index']);
+    Route::get('/ulinkaciamis/admin', [DashboardController::class, 'index']);
+    Route::get('/ulinkaciamis/admin/dashboard.php', [DashboardController::class, 'index']);
+
+    // Locations Management
+    Route::get('/admin/kelola', [LocationController::class, 'index'])->name('admin.locations.index');
+    Route::get('/admin/kelola.php', function (Request $request, LocationController $controller) {
+        if ($request->has('hapus')) {
+            return $controller->destroy($request, $request->query('hapus'));
+        }
+
+        return $controller->index($request);
+    });
+    Route::get('/ulinkaciamis/admin/kelola.php', function (Request $request, LocationController $controller) {
+        if ($request->has('hapus')) {
+            return $controller->destroy($request, $request->query('hapus'));
+        }
+
+        return $controller->index($request);
+    });
+
+    Route::get('/admin/tambah', [LocationController::class, 'create'])->name('admin.locations.create');
+    Route::get('/admin/tambah.php', [LocationController::class, 'create']);
+    Route::get('/ulinkaciamis/admin/tambah.php', [LocationController::class, 'create']);
+    Route::post('/admin/tambah', [LocationController::class, 'store'])->name('admin.locations.store');
+    Route::post('/admin/tambah.php', [LocationController::class, 'store']);
+    Route::post('/ulinkaciamis/admin/tambah.php', [LocationController::class, 'store']);
+
+    Route::get('/admin/edit/{id}', [LocationController::class, 'edit'])->name('admin.locations.edit');
+    Route::get('/admin/edit.php', function (Request $request, LocationController $controller) {
+        return $controller->edit($request, $request->query('id', 0));
+    });
+    Route::get('/ulinkaciamis/admin/edit.php', function (Request $request, LocationController $controller) {
+        return $controller->edit($request, $request->query('id', 0));
+    });
+    Route::put('/admin/locations/{id}', [LocationController::class, 'update'])->name('admin.locations.update');
+    Route::post('/admin/edit.php', function (Request $request, LocationController $controller) {
+        return $controller->update($request, $request->query('id', 0));
+    });
+    Route::delete('/admin/locations/{id}', [LocationController::class, 'destroy'])->name('admin.locations.destroy');
+
+    // Category Management
+    Route::get('/admin/kategori', [CategoryController::class, 'index'])->name('admin.categories.index');
+    Route::get('/admin/kategori.php', function (Request $request, CategoryController $controller) {
+        if ($request->has('hapus')) {
+            return $controller->destroy($request, $request->query('hapus'));
+        }
+
+        return $controller->index();
+    });
+    Route::get('/ulinkaciamis/admin/kategori.php', function (Request $request, CategoryController $controller) {
+        if ($request->has('hapus')) {
+            return $controller->destroy($request, $request->query('hapus'));
+        }
+
+        return $controller->index();
+    });
+    Route::post('/admin/kategori', [CategoryController::class, 'store'])->name('admin.categories.store');
+    Route::post('/admin/kategori.php', [CategoryController::class, 'store']);
+    Route::put('/admin/kategori/{id}', [CategoryController::class, 'update'])->name('admin.categories.update');
+    Route::delete('/admin/kategori/{id}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
 });
 
-Route::get('/ulinkaciamis', function () {
-    require base_path('index.php');
-    return '';
-});
+/*
+|--------------------------------------------------------------------------
+| Static Assets Handler (Support both standard assets and /ulinkaciamis/ prefix)
+|--------------------------------------------------------------------------
+*/
 
-Route::get('/ulinkaciamis/', function () {
-    require base_path('index.php');
-    return '';
-});
+if (! function_exists('serveLaravelAsset')) {
+    function serveLaravelAsset(string $relativePath)
+    {
+        $filePath = public_path('assets/'.$relativePath);
+        if (! file_exists($filePath) || is_dir($filePath)) {
+            // Fallback to base assets if not yet copied
+            $fallback = base_path('assets/'.$relativePath);
+            if (file_exists($fallback) && ! is_dir($fallback)) {
+                $filePath = $fallback;
+            } else {
+                abort(404);
+            }
+        }
 
-// API Destinasi
-Route::any('/api/destinasi.php', function () {
-    require base_path('api/destinasi.php');
-    return '';
-});
+        $ext = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+        $mimes = [
+            'webp' => 'image/webp',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'png' => 'image/png',
+            'gif' => 'image/gif',
+            'svg' => 'image/svg+xml',
+            'css' => 'text/css',
+            'js' => 'application/javascript',
+            'json' => 'application/json',
+        ];
 
-Route::any('/ulinkaciamis/api/destinasi.php', function () {
-    require base_path('api/destinasi.php');
-    return '';
-});
+        $mime = $mimes[$ext] ?? mime_content_type($filePath);
 
-// Admin Panel Routes
-Route::any('/admin', function () {
-    require base_path('admin/dashboard.php');
-    return '';
-});
-
-Route::any('/admin/{file}', function ($file) {
-    $target = base_path('admin/' . $file);
-    if (file_exists($target)) {
-        require $target;
-        return '';
+        return response()->file($filePath, ['Content-Type' => $mime]);
     }
-    abort(404);
-})->where('file', '.*');
-
-Route::any('/ulinkaciamis/admin/{file}', function ($file) {
-    $target = base_path('admin/' . $file);
-    if (file_exists($target)) {
-        require $target;
-        return '';
-    }
-    abort(404);
-})->where('file', '.*');
-
-Route::any('/login', function () {
-    require base_path('admin/login.php');
-    return '';
-});
-
-Route::any('/ulinkaciamis/login', function () {
-    require base_path('admin/login.php');
-    return '';
-});
-
-// Static Assets Handler (Support both /assets/... and /ulinkaciamis/assets/...)
-function serveProjectAsset($relativePath) {
-    $filePath = base_path('assets/' . $relativePath);
-    if (!file_exists($filePath) || is_dir($filePath)) {
-        abort(404);
-    }
-    $mime = mime_content_type($filePath);
-    $ext = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
-    if ($ext === 'webp') {
-        $mime = 'image/webp';
-    } elseif ($ext === 'css') {
-        $mime = 'text/css';
-    } elseif ($ext === 'js') {
-        $mime = 'application/javascript';
-    }
-    return response()->file($filePath, ['Content-Type' => $mime]);
 }
 
-Route::get('/assets/{path}', function ($path) {
-    return serveProjectAsset($path);
+Route::get('/ulinkaciamis/assets/{path}', function (string $path) {
+    return serveLaravelAsset($path);
 })->where('path', '.*');
 
-Route::get('/ulinkaciamis/assets/{path}', function ($path) {
-    return serveProjectAsset($path);
+Route::get('/assets/{path}', function (string $path) {
+    return serveLaravelAsset($path);
 })->where('path', '.*');
 
-// Public Images Handler
-Route::get('/ulinkaciamis/public/images/{path}', function ($path) {
-    $filePath = public_path('images/' . $path);
-    if (!file_exists($filePath)) {
+Route::get('/ulinkaciamis/public/images/{path}', function (string $path) {
+    $filePath = public_path('images/'.$path);
+    if (! file_exists($filePath)) {
         abort(404);
     }
-    return response()->file($filePath);
-})->where('path', '.*');
 
-Route::get('/public/images/{path}', function ($path) {
-    $filePath = public_path('images/' . $path);
-    if (!file_exists($filePath)) {
-        abort(404);
-    }
     return response()->file($filePath);
 })->where('path', '.*');

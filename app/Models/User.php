@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,7 +11,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
     /**
@@ -24,6 +25,8 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'wilayah',
+        'is_active',
     ];
 
     /**
@@ -46,6 +49,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
         ];
     }
 
@@ -54,13 +58,22 @@ class User extends Authenticatable
         return $this->hasMany(Location::class, 'created_by');
     }
 
-    public function isAdmin(): bool
-    {
-        return in_array($this->role, ['admin', 'super_admin']);
-    }
-
     public function isSuperAdmin(): bool
     {
-        return $this->role === 'super_admin';
+        return in_array($this->role, ['superadmin', 'super_admin']);
+    }
+
+    public function isRegional(): bool
+    {
+        return ! $this->isSuperAdmin() && ! empty($this->wilayah) && $this->wilayah !== 'Seluruh Kabupaten Ciamis';
+    }
+
+    public function getRoleLabelAttribute(): string
+    {
+        if ($this->isSuperAdmin()) {
+            return 'Super Administrator';
+        }
+
+        return 'Staff Kec. '.($this->wilayah ?: 'Ciamis');
     }
 }

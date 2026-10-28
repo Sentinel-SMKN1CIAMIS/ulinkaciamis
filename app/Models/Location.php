@@ -19,6 +19,7 @@ class Location extends Model
         'latitude',
         'longitude',
         'address',
+        'kecamatan',
         'phone',
         'website',
         'opening_hours',
@@ -28,6 +29,9 @@ class Location extends Model
         'image',
         'is_active',
         'views',
+        'rating',
+        'features',
+        'moods',
     ];
 
     protected $casts = [
@@ -36,6 +40,7 @@ class Location extends Model
         'has_wifi' => 'boolean',
         'is_active' => 'boolean',
         'views' => 'integer',
+        'rating' => 'float',
     ];
 
     public function category(): BelongsTo
@@ -59,6 +64,59 @@ class Location extends Model
             return null;
         }
 
+        if (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://')) {
+            return $this->image;
+        }
+
+        if (str_starts_with($this->image, '/ulinkaciamis/')) {
+            return $this->image;
+        }
+
+        if (str_starts_with($this->image, 'assets/')) {
+            return '/ulinkaciamis/'.$this->image;
+        }
+
         return asset('storage/'.$this->image);
+    }
+
+    // Aliases for compatibility
+    public function getNamaAttribute(): string
+    {
+        return $this->name ?? '';
+    }
+
+    public function getAlamatAttribute(): ?string
+    {
+        return $this->address;
+    }
+
+    public function getDeskripsiAttribute(): ?string
+    {
+        return $this->description;
+    }
+
+    public function getHargaAttribute(): ?string
+    {
+        return $this->price_range;
+    }
+
+    public function getWifiAttribute(): bool
+    {
+        return (bool) $this->has_wifi;
+    }
+
+    public function getFotoAttribute(): ?string
+    {
+        return $this->image;
+    }
+
+    public function getNoTeleponAttribute(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function getStatusAttribute(): string
+    {
+        return $this->is_active ? 'aktif' : 'nonaktif';
     }
 }
