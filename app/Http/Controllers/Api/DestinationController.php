@@ -45,7 +45,7 @@ class DestinationController extends Controller
         }
 
         $locations = $query->orderByDesc('id')->get();
-        $fallbackImage = 'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=700&auto=format&fit=crop';
+        $fallbackImage = '/ulinkaciamis/assets/images/alun_alun_ciamis.jpg';
 
         $data = $locations->map(function (Location $loc) use ($fallbackImage) {
             $hours = $loc->opening_hours ?: 'Setiap Hari';

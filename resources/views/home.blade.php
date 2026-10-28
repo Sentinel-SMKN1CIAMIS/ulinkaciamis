@@ -974,7 +974,7 @@
       return categoryMeta[slug] || categoryMeta.default;
     }
 
-    const fallbackImage = "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=700&auto=format&fit=crop";
+    const fallbackImage = "/ulinkaciamis/assets/images/alun_alun_ciamis.jpg";
 
     // Global State
     let destinations = [];
@@ -1005,31 +1005,15 @@
       updateFavoriteUI();
     }
 
-    // Helper Functions: Smart WebP Thumbnail & Optimized Image Resolvers
+    // Helper Functions: Photo Url Resolvers
     function getThumbPhotoUrl(url) {
       if (!url) return fallbackImage;
-      try {
-        const parts = url.split('/');
-        const filename = parts[parts.length - 1];
-        const dotIndex = filename.lastIndexOf('.');
-        const nameNoExt = dotIndex !== -1 ? filename.substring(0, dotIndex) : filename;
-        return `/ulinkaciamis/assets/images/thumbs/${nameNoExt}.webp`;
-      } catch (e) {
-        return url;
-      }
+      return url;
     }
 
     function getOptimizedPhotoUrl(url) {
       if (!url) return fallbackImage;
-      try {
-        const parts = url.split('/');
-        const filename = parts[parts.length - 1];
-        const dotIndex = filename.lastIndexOf('.');
-        const nameNoExt = dotIndex !== -1 ? filename.substring(0, dotIndex) : filename;
-        return `/ulinkaciamis/assets/images/optimized/${nameNoExt}.webp`;
-      } catch (e) {
-        return url;
-      }
+      return url;
     }
 
     // 2. Inisialisasi Peta Leaflet Google Maps Roadmap & Foto Pin Asli (Ultra Fast 60FPS Zoom)
