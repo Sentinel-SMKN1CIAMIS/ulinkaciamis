@@ -178,10 +178,10 @@
       margin-bottom: 16px;
     }
     .logo-container img {
-      height: 68px;
-      max-height: 76px;
+      height: 56px;
+      max-height: 62px;
       width: auto;
-      max-width: 260px;
+      max-width: 220px;
       object-fit: contain;
     }
     .header-badge {

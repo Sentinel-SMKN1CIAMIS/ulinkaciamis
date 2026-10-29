@@ -336,12 +336,12 @@
 
   <!-- ================= TOP NAVIGATION ================= -->
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-20 lg:h-[84px] flex items-center justify-between">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-[70px] flex items-center justify-between">
       <div class="flex items-center gap-3.5 cursor-pointer" onclick="switchTab('beranda')">
-        <img src="{{ asset('images/ulinkaCiamis.webp') }}" alt="UlinKa Ciamis" class="h-13 sm:h-15 md:h-16 lg:h-[70px] w-auto max-w-[210px] sm:max-w-[260px] md:max-w-[320px] object-contain transition duration-200 hover:scale-105" />
-        <span class="hidden sm:inline-block h-6 w-px bg-slate-200"></span>
-        <span class="hidden sm:flex items-center gap-1.5 text-xs font-bold text-[#9e0b84] bg-fuchsia-50 border border-[#9e0b84]/20 px-3 py-1.5 rounded-full shadow-sm">
-          <img src="/ulinkaciamis/assets/images/lambang_ciamis.png" class="w-4 h-4 object-contain" /> Tatar Galuh
+        <img src="{{ asset('images/ulinkaCiamis.webp') }}" alt="UlinKa Ciamis" class="h-11 sm:h-12 md:h-13 lg:h-14 w-auto max-w-[180px] sm:max-w-[210px] md:max-w-[240px] object-contain transition duration-200 hover:scale-105" />
+        <span class="hidden sm:inline-block h-5 w-px bg-slate-200"></span>
+        <span class="hidden sm:flex items-center gap-1.5 text-xs font-bold text-[#9e0b84] bg-fuchsia-50 border border-[#9e0b84]/20 px-2.5 py-1 rounded-full shadow-sm">
+          <img src="/ulinkaciamis/assets/images/lambang_ciamis.png" class="w-3.5 h-3.5 object-contain" /> Tatar Galuh
         </span>
       </div>
 
