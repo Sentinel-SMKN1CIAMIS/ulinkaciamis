@@ -96,11 +96,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/ulinkaciamis/admin/edit.php', function (Request $request, LocationController $controller) {
         return $controller->edit($request, $request->query('id', 0));
     });
-    Route::put('/admin/locations/{id}', [LocationController::class, 'update'])->name('admin.locations.update');
-    Route::post('/admin/edit.php', function (Request $request, LocationController $controller) {
-        return $controller->update($request, $request->query('id', 0));
+    Route::match(['put', 'post'], '/admin/locations/{id}', [LocationController::class, 'update'])->name('admin.locations.update');
+    Route::match(['put', 'post'], '/ulinkaciamis/admin/locations/{id}', [LocationController::class, 'update']);
+    Route::match(['put', 'post'], '/admin/edit.php', function (Request $request, LocationController $controller) {
+        return $controller->update($request, $request->query('id', $request->input('id', 0)));
+    });
+    Route::match(['put', 'post'], '/ulinkaciamis/admin/edit.php', function (Request $request, LocationController $controller) {
+        return $controller->update($request, $request->query('id', $request->input('id', 0)));
     });
     Route::delete('/admin/locations/{id}', [LocationController::class, 'destroy'])->name('admin.locations.destroy');
+    Route::match(['delete', 'post'], '/ulinkaciamis/admin/locations/{id}', [LocationController::class, 'destroy']);
 
     // Category Management
     Route::get('/admin/kategori', [CategoryController::class, 'index'])->name('admin.categories.index');
@@ -172,6 +177,15 @@ Route::get('/assets/{path}', function (string $path) {
 })->where('path', '.*');
 
 Route::get('/ulinkaciamis/public/images/{path}', function (string $path) {
+    $filePath = public_path('images/'.$path);
+    if (! file_exists($filePath)) {
+        abort(404);
+    }
+
+    return response()->file($filePath);
+})->where('path', '.*');
+
+Route::get('/images/{path}', function (string $path) {
     $filePath = public_path('images/'.$path);
     if (! file_exists($filePath)) {
         abort(404);

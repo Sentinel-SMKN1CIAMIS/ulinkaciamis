@@ -305,7 +305,7 @@
 
       <!-- Shortcuts -->
       <div style="display:flex;align-items:center;gap:6px;margin:12px 0 6px;flex-wrap:wrap;">
-        <span style="font-size:11.5px;color:var(--text-muted);font-weight:700;"><i class="fas fa-bolt text-amber-500"></i> Titik Cepat {{ $userWilayah ?: 'Ciamis' }}:</span>
+        <span style="font-size:11.5px;color:var(--text-muted);font-weight:700;"><i class="fas fa-bolt text-amber-500"></i> Titik Cepat Kec. {{ $targetKec ?? ($userWilayah ?: 'Ciamis') }}:</span>
         @foreach($activeCfg['shortcuts'] as $sc)
           <button type="button" onclick="jumpTo({{ $sc['lat'] }}, {{ $sc['lng'] }})" class="btn-ghost-sm">
             {{ $sc['name'] }}

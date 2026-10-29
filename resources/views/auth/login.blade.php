@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Masuk - Portal Wilayah UlinKa Ciamis</title>
-  <link rel="icon" type="image/png" href="{{ asset('assets/images/lambang_ciamis.png') }}">
+  <link rel="icon" type="image/webp" href="{{ asset('images/ulinkaCiamis.webp') }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -174,12 +174,14 @@
     .logo-container {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
+      gap: 12px;
+      margin-bottom: 16px;
     }
     .logo-container img {
-      height: 34px;
+      height: 68px;
+      max-height: 76px;
       width: auto;
+      max-width: 260px;
       object-fit: contain;
     }
     .header-badge {
@@ -419,7 +421,7 @@
     <div class="form-panel">
       <div class="form-header">
         <div class="logo-container">
-          <img src="{{ asset('assets/images/ulinkaCiamis_cropped.webp') }}" alt="UlinKa Ciamis">
+          <img src="{{ asset('images/ulinkaCiamis.webp') }}" alt="UlinKa Ciamis">
           <span class="header-badge">Admin Panel</span>
         </div>
         <h2 class="form-title">Masuk ke Sistem</h2>

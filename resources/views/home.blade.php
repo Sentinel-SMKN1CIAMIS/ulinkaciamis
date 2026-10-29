@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UlinKa Ciamis - Eksplorasi Wisata & Fasilitas Tatar Galuh</title>
-  <link rel="icon" type="image/png" href="/ulinkaciamis/assets/images/lambang_ciamis.png">
+  <link rel="icon" type="image/webp" href="{{ asset('images/ulinkaCiamis.webp') }}">
   <meta name="description" content="Direktori resmi dan peta panduan wisata, sejarah Galuh, kuliner, cafe, UMKM, dan fasilitas umum di Kabupaten Ciamis.">
   
   <!-- Tailwind CSS -->
@@ -336,12 +336,12 @@
 
   <!-- ================= TOP NAVIGATION ================= -->
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('beranda')">
-        <img src="/ulinkaciamis/public/images/ulinkaCiamis_cropped.webp" alt="UlinKa Ciamis" class="h-6 sm:h-7 w-auto max-w-[130px] sm:max-w-[150px] object-contain transition hover:scale-105" />
-        <span class="hidden sm:inline-block h-5 w-px bg-slate-200"></span>
-        <span class="hidden sm:flex items-center gap-1.5 text-[11px] font-bold text-[#9e0b84] bg-fuchsia-50 border border-[#9e0b84]/20 px-2.5 py-1 rounded-full shadow-sm">
-          <img src="/ulinkaciamis/assets/images/lambang_ciamis.png" class="w-3.5 h-3.5 object-contain" /> Tatar Galuh
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-20 lg:h-[84px] flex items-center justify-between">
+      <div class="flex items-center gap-3.5 cursor-pointer" onclick="switchTab('beranda')">
+        <img src="{{ asset('images/ulinkaCiamis.webp') }}" alt="UlinKa Ciamis" class="h-13 sm:h-15 md:h-16 lg:h-[70px] w-auto max-w-[210px] sm:max-w-[260px] md:max-w-[320px] object-contain transition duration-200 hover:scale-105" />
+        <span class="hidden sm:inline-block h-6 w-px bg-slate-200"></span>
+        <span class="hidden sm:flex items-center gap-1.5 text-xs font-bold text-[#9e0b84] bg-fuchsia-50 border border-[#9e0b84]/20 px-3 py-1.5 rounded-full shadow-sm">
+          <img src="/ulinkaciamis/assets/images/lambang_ciamis.png" class="w-4 h-4 object-contain" /> Tatar Galuh
         </span>
       </div>
 
@@ -361,12 +361,28 @@
         </button>
       </nav>
 
-      <!-- Right Action Items (Clean, No Public Login Button) -->
+      <!-- Right Action Items -->
       <div class="flex items-center gap-2">
-        <button onclick="switchTab('favorit')" class="relative w-10 h-10 rounded-full bg-slate-100 hover:bg-[#fdf2fa] flex items-center justify-center text-slate-600 hover:text-[#9e0b84] transition" title="Destinasi Tersimpan">
-          <i class="ph-bold ph-heart text-lg"></i>
+        <button onclick="switchTab('favorit')" class="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-100 hover:bg-[#fdf2fa] flex items-center justify-center text-slate-600 hover:text-[#9e0b84] transition" title="Destinasi Tersimpan">
+          <i class="ph-bold ph-heart text-base sm:text-lg"></i>
           <span class="fav-badge absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-white rounded-full text-[10px] flex items-center justify-center font-bold hidden">0</span>
         </button>
+
+        @auth
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-900 text-xs font-bold transition shadow-sm">
+              <i class="ph-bold ph-shield-check text-sm text-purple-700"></i>
+              <span class="max-w-[120px] sm:max-w-none truncate">{{ Auth::user()->role_label }}</span>
+              <span class="hidden md:inline text-[10px] text-purple-700 bg-white px-1.5 py-0.5 rounded-md font-extrabold border border-purple-200">Panel ➜</span>
+            </a>
+            <form method="POST" action="{{ route('logout') }}" class="inline">
+              @csrf
+              <button type="submit" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-500 hover:text-rose-600 flex items-center justify-center transition" title="Keluar / Logout">
+                <i class="ph-bold ph-sign-out text-sm"></i>
+              </button>
+            </form>
+          </div>
+        @endauth
       </div>
     </div>
   </header>
@@ -908,6 +924,7 @@
             <i class="ph-bold ph-navigation-arrow text-base"></i> Rute Google Maps
           </a>
         </div>
+        <div id="modalEditContainer" class="mt-2.5"></div>
       </div>
     </div>
   </div>
@@ -987,10 +1004,33 @@
     let currentSearch = '';
     let favoriteIds = JSON.parse(localStorage.getItem('ciamisku_favorites') || '[]');
 
+    // Current authenticated user state for regional authority
+    @php
+      $currentUserData = Auth::check() ? [
+          'id' => Auth::user()->id,
+          'name' => Auth::user()->name,
+          'username' => Auth::user()->username,
+          'role' => Auth::user()->role,
+          'wilayah' => Auth::user()->wilayah,
+          'is_superadmin' => Auth::user()->isSuperAdmin(),
+          'is_regional' => Auth::user()->isRegional(),
+          'role_label' => Auth::user()->role_label,
+      ] : null;
+    @endphp
+    const currentUser = {!! json_encode($currentUserData) !!};
+
     // 1. Fetch Real Data from MySQL API
     async function loadDataFromAPI() {
       try {
-        const response = await fetch('/ulinkaciamis/api/destinasi.php');
+        let response;
+        try {
+          response = await fetch('{{ route("api.destinasi") }}');
+        } catch(e) {
+          response = await fetch('/ulinkaciamis/api/destinasi.php');
+        }
+        if (!response || !response.ok) {
+          response = await fetch('/ulinkaciamis/api/destinasi.php');
+        }
         const json = await response.json();
         if (json.status === 'ok' && Array.isArray(json.data)) {
           destinations = json.data;
@@ -1179,9 +1219,29 @@
             <div style="font-size:11px; font-weight:800; color:#10b981; margin-bottom:8px;">
               🏷️ ${placePrice}
             </div>
-            <button onclick="openModal(${place.id})" style="background:#9e0b84; color:#ffffff; border:none; padding:8px 12px; border-radius:10px; font-size:11px; font-weight:700; cursor:pointer; width:100%; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 2px 6px rgba(5,150,105,0.3);">
+            <button onclick="openModal(${place.id})" style="background:#9e0b84; color:#ffffff; border:none; padding:8px 12px; border-radius:10px; font-size:11px; font-weight:700; cursor:pointer; width:100%; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 2px 6px rgba(158,11,132,0.3);">
               Detail Lengkap & Rute ➜
             </button>
+            ${(() => {
+              if (!currentUser) return '';
+              const isSuper = currentUser.is_superadmin;
+              const isRegionalMatch = currentUser.is_regional && currentUser.wilayah &&
+                (placeKec.toLowerCase() === currentUser.wilayah.toLowerCase() ||
+                 placeKec.toLowerCase().includes(currentUser.wilayah.toLowerCase()));
+              if (isSuper || isRegionalMatch) {
+                return `
+                  <a href="/admin/edit/${place.id}" style="margin-top:6px; text-decoration:none; background:#059669; color:#ffffff; border:none; padding:7px 10px; border-radius:10px; font-size:10.5px; font-weight:800; width:100%; display:flex; align-items:center; justify-content:center; gap:5px; box-shadow:0 2px 5px rgba(5,150,105,0.3); transition:all 0.2s;">
+                    ✏️ Edit Data &amp; Geser Pin
+                  </a>
+                `;
+              } else {
+                return `
+                  <div style="margin-top:6px; font-size:9.5px; font-weight:700; color:#64748b; background:#f8fafc; border:1px dashed #cbd5e1; padding:4px 6px; border-radius:8px; text-align:center;">
+                    🔒 Khusus Petugas Kec. ${placeKec}
+                  </div>
+                `;
+              }
+            })()}
           </div>
         `;
         marker.bindPopup(popupContent, {
@@ -1296,6 +1356,21 @@
             <button onclick="openModal(${item.id})" class="w-full py-2.5 rounded-xl border border-emerald-600 text-emerald-700 hover:bg-emerald-600 hover:text-white font-bold text-xs transition duration-200 flex items-center justify-center gap-1.5">
               Detail, Jam Buka & Rute <i class="ph-bold ph-arrow-right"></i>
             </button>
+            ${(() => {
+              if (!currentUser) return '';
+              const isSuper = currentUser.is_superadmin;
+              const isRegionalMatch = currentUser.is_regional && currentUser.wilayah &&
+                (kec.toLowerCase() === currentUser.wilayah.toLowerCase() ||
+                 kec.toLowerCase().includes(currentUser.wilayah.toLowerCase()));
+              if (isSuper || isRegionalMatch) {
+                return `
+                  <a href="/admin/edit/${item.id}" class="w-full mt-2 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white border border-emerald-200 font-bold text-[11px] transition flex items-center justify-center gap-1">
+                    <i class="ph-bold ph-pencil-simple"></i> Edit Data (${kec})
+                  </a>
+                `;
+              }
+              return '';
+            })()}
           </div>
         </div>
       `;
@@ -1527,6 +1602,32 @@
           mapInstance.flyTo([lat, lng], 15, { duration: 1.2 });
         }, 250);
       };
+
+      const editContainer = document.getElementById('modalEditContainer');
+      if (editContainer) {
+        if (currentUser) {
+          const isSuper = currentUser.is_superadmin;
+          const isRegionalMatch = currentUser.is_regional && currentUser.wilayah &&
+            (kec.toLowerCase() === currentUser.wilayah.toLowerCase() ||
+             kec.toLowerCase().includes(currentUser.wilayah.toLowerCase()));
+
+          if (isSuper || isRegionalMatch) {
+            editContainer.innerHTML = `
+              <a href="/admin/edit/${item.id}" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-2xl flex items-center justify-center gap-2 text-xs shadow-md shadow-emerald-600/20 transition">
+                <i class="ph-bold ph-pencil-simple-line text-base"></i> Edit Data &amp; Geser Titik Lokasi
+              </a>
+            `;
+          } else {
+            editContainer.innerHTML = `
+              <div class="w-full py-2.5 px-3 bg-slate-50 border border-slate-200 text-slate-500 rounded-xl flex items-center justify-center gap-2 text-xs font-semibold">
+                <i class="ph-bold ph-lock text-slate-400"></i> Hanya Petugas Wilayah Kec. ${kec} atau Superadmin yang dapat mengedit.
+              </div>
+            `;
+          }
+        } else {
+          editContainer.innerHTML = '';
+        }
+      }
 
       const modal = document.getElementById('detailModal');
       modal.classList.remove('hidden');

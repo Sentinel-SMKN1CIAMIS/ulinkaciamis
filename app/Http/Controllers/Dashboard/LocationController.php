@@ -13,10 +13,11 @@ use Illuminate\Support\Facades\Auth;
 class LocationController extends Controller
 {
     protected array $kecamatanList = [
-        'Ciamis', 'Panjalu', 'Kawali', 'Sadananya', 'Cikoneng', 'Sindangkasih', 'Rancah',
-        'Cijeungjing', 'Panumbangan', 'Baregbeg', 'Rajadesa', 'Banjaranyar', 'Pamarican',
-        'Banjarsari', 'Cipaku', 'Lumbung', 'Jatinagara', 'Sukadana', 'Cisaga', 'Tambaksari',
-        'Sukamantri', 'Cidolog', 'Cimaragas', 'Lakbok', 'Purwadadi', 'Mangunjaya',
+        'Ciamis', 'Panjalu', 'Kawali', 'Sadananya', 'Cikoneng', 'Sindangkasih', 'Cihaurbeuti',
+        'Panumbangan', 'Rancah', 'Cijeungjing', 'Baregbeg', 'Rajadesa', 'Panawangan',
+        'Cipaku', 'Lumbung', 'Jatinagara', 'Sukadana', 'Cisaga', 'Tambaksari', 'Sukamantri',
+        'Banjaranyar', 'Pamarican', 'Banjarsari', 'Cidolog', 'Cimaragas', 'Lakbok',
+        'Purwadadi', 'Mangunjaya',
     ];
 
     protected array $wilayahConfigs = [
@@ -25,11 +26,11 @@ class LocationController extends Controller
             'bounds' => ['min_lat' => -7.220, 'max_lat' => -7.050, 'min_lng' => 108.210, 'max_lng' => 108.350],
             'shortcuts' => [
                 ['name' => 'Situ Lengkong', 'lat' => -7.135200, 'lng' => 108.281100],
-                ['name' => 'Alun-Alun / Pasar Panjalu', 'lat' => -7.138200, 'lng' => 108.281500],
-                ['name' => 'Curug 7 Cibolang', 'lat' => -7.120500, 'lng' => 108.267800],
+                ['name' => 'Alun-Alun Panjalu', 'lat' => -7.138200, 'lng' => 108.281500],
+                ['name' => 'Curug 7 Cibolang', 'lat' => -7.152778, 'lng' => 108.257500],
                 ['name' => 'Kantor Kec. Panjalu', 'lat' => -7.136800, 'lng' => 108.280500],
                 ['name' => 'Puskesmas Panjalu', 'lat' => -7.137800, 'lng' => 108.280100],
-                ['name' => 'AHASS Honda Panjalu', 'lat' => -7.139500, 'lng' => 108.282500],
+                ['name' => 'AHASS Honda Panjalu', 'lat' => -7.135108, 'lng' => 108.273512],
             ],
         ],
         'Kawali' => [
@@ -37,10 +38,12 @@ class LocationController extends Controller
             'bounds' => ['min_lat' => -7.260, 'max_lat' => -7.130, 'min_lng' => 108.310, 'max_lng' => 108.430],
             'shortcuts' => [
                 ['name' => 'Astana Gede Kawali', 'lat' => -7.195000, 'lng' => 108.368000],
+                ['name' => 'Taman Surawisesa Kawali', 'lat' => -7.196200, 'lng' => 108.368800],
+                ['name' => 'Situ Wangi Winduraja', 'lat' => -7.171400, 'lng' => 108.374800],
                 ['name' => 'Simpang Tiga Kawali', 'lat' => -7.196800, 'lng' => 108.368200],
                 ['name' => 'Kantor Kec. Kawali', 'lat' => -7.196500, 'lng' => 108.367500],
-                ['name' => 'Puskesmas DTP Kawali', 'lat' => -7.198100, 'lng' => 108.367800],
-                ['name' => 'AHASS Kawali', 'lat' => -7.200500, 'lng' => 108.370200],
+                ['name' => 'Puskesmas DTP Kawali', 'lat' => -7.187321, 'lng' => 108.369814],
+                ['name' => 'AHASS Kawali', 'lat' => -7.186514, 'lng' => 108.368902],
             ],
         ],
         'Ciamis' => [
@@ -50,17 +53,55 @@ class LocationController extends Controller
                 ['name' => 'Alun-Alun Ciamis', 'lat' => -7.326694, 'lng' => 108.353192],
                 ['name' => 'Masjid Agung Ciamis', 'lat' => -7.327150, 'lng' => 108.352480],
                 ['name' => 'Stasiun Ciamis', 'lat' => -7.324883, 'lng' => 108.349947],
-                ['name' => 'RSUD Ciamis', 'lat' => -7.334750, 'lng' => 108.359400],
+                ['name' => 'RSUD Ciamis', 'lat' => -7.331512, 'lng' => 108.355104],
                 ['name' => 'Stadion Galuh', 'lat' => -7.328900, 'lng' => 108.342100],
+                ['name' => 'SMKN 2 Ciamis (Maleber)', 'lat' => -7.316111, 'lng' => 108.345833],
             ],
         ],
         'Sadananya' => [
             'lat' => -7.278500, 'lng' => 108.318000, 'zoom' => 14,
             'bounds' => ['min_lat' => -7.320, 'max_lat' => -7.190, 'min_lng' => 108.240, 'max_lng' => 108.360],
             'shortcuts' => [
-                ['name' => 'Cadas Ngampar', 'lat' => -7.247997, 'lng' => 108.309501],
+                ['name' => 'Wisata Cadas Ngampar', 'lat' => -7.247997, 'lng' => 108.309501],
                 ['name' => 'Curug Panganten', 'lat' => -7.235100, 'lng' => 108.298500],
+                ['name' => 'Kantor Kec. Sadananya', 'lat' => -7.279500, 'lng' => 108.319000],
                 ['name' => 'Puskesmas Sadananya', 'lat' => -7.278800, 'lng' => 108.318200],
+            ],
+        ],
+        'Cihaurbeuti' => [
+            'lat' => -7.240000, 'lng' => 108.203000, 'zoom' => 14,
+            'bounds' => ['min_lat' => -7.300, 'max_lat' => -7.180, 'min_lng' => 108.140, 'max_lng' => 108.270],
+            'shortcuts' => [
+                ['name' => 'Sukahaji Waterboom', 'lat' => -7.246944, 'lng' => 108.203611],
+                ['name' => 'RM Saung Curug', 'lat' => -7.245833, 'lng' => 108.204167],
+                ['name' => 'Puskesmas Cihaurbeuti', 'lat' => -7.239167, 'lng' => 108.202222],
+                ['name' => 'Bukit Sampalan Asri', 'lat' => -7.229167, 'lng' => 108.235556],
+            ],
+        ],
+        'Sindangkasih' => [
+            'lat' => -7.280000, 'lng' => 108.230000, 'zoom' => 14,
+            'bounds' => ['min_lat' => -7.340, 'max_lat' => -7.230, 'min_lng' => 108.180, 'max_lng' => 108.280],
+            'shortcuts' => [
+                ['name' => 'Sungai Cireong Park', 'lat' => -7.274500, 'lng' => 108.225800],
+                ['name' => 'Puskesmas Sindangkasih', 'lat' => -7.295278, 'lng' => 108.234722],
+                ['name' => 'Pasar Sindangkasih', 'lat' => -7.296667, 'lng' => 108.232500],
+            ],
+        ],
+        'Rancah' => [
+            'lat' => -7.195000, 'lng' => 108.500000, 'zoom' => 14,
+            'bounds' => ['min_lat' => -7.260, 'max_lat' => -7.130, 'min_lng' => 108.430, 'max_lng' => 108.560],
+            'shortcuts' => [
+                ['name' => 'Puncak Bangku Rancah', 'lat' => -7.195600, 'lng' => 108.502800],
+                ['name' => 'Pasar Rancah', 'lat' => -7.196944, 'lng' => 108.506111],
+                ['name' => 'Puskesmas Rancah', 'lat' => -7.197222, 'lng' => 108.504444],
+            ],
+        ],
+        'Panumbangan' => [
+            'lat' => -7.170000, 'lng' => 108.225000, 'zoom' => 14,
+            'bounds' => ['min_lat' => -7.240, 'max_lat' => -7.100, 'min_lng' => 108.150, 'max_lng' => 108.290],
+            'shortcuts' => [
+                ['name' => 'Puncak Puspa', 'lat' => -7.176389, 'lng' => 108.218889],
+                ['name' => 'Puskesmas Panumbangan', 'lat' => -7.171111, 'lng' => 108.231667],
             ],
         ],
     ];
@@ -217,19 +258,20 @@ class LocationController extends Controller
         $isRegional = $user ? $user->isRegional() : false;
         $userWilayah = $user->wilayah ?? '';
 
-        if ($isRegional && $location->kecamatan !== $userWilayah) {
+        if ($isRegional && strcasecmp((string) $location->kecamatan, (string) $userWilayah) !== 0) {
             return redirect()->route('admin.locations.index')
-                ->with('error', "Akses Ditolak: Anda hanya berwenang mengelola data di Kecamatan {$userWilayah}.");
+                ->with('error', "Akses Ditolak: Anda hanya berwenang mengelola data di Kecamatan {$userWilayah}. Destinasi '{$location->name}' berada di Kecamatan {$location->kecamatan}.");
         }
 
         $categories = Category::orderBy('sort_order')->get();
         $kecamatanList = $this->kecamatanList;
 
-        $activeCfg = $this->wilayahConfigs[$userWilayah] ?? [
+        $targetKec = $isRegional ? $userWilayah : ($location->kecamatan ?: 'Ciamis');
+        $activeCfg = $this->wilayahConfigs[$targetKec] ?? [
             'lat' => $location->latitude ?: -7.326694,
             'lng' => $location->longitude ?: 108.353192,
             'zoom' => 15,
-            'bounds' => ['min_lat' => -7.55, 'max_lat' => -7.00, 'min_lng' => 108.15, 'max_lng' => 108.65],
+            'bounds' => ['min_lat' => -7.65, 'max_lat' => -7.00, 'min_lng' => 108.15, 'max_lng' => 108.75],
             'shortcuts' => [
                 ['name' => 'Alun-Alun Ciamis', 'lat' => -7.326694, 'lng' => 108.353192],
                 ['name' => 'Situ Panjalu', 'lat' => -7.135200, 'lng' => 108.281100],
@@ -244,6 +286,7 @@ class LocationController extends Controller
             'kecamatanList',
             'isRegional',
             'userWilayah',
+            'targetKec',
             'activeCfg'
         ));
     }
@@ -258,9 +301,9 @@ class LocationController extends Controller
         $isRegional = $user ? $user->isRegional() : false;
         $userWilayah = $user->wilayah ?? '';
 
-        if ($isRegional && $location->kecamatan !== $userWilayah) {
+        if ($isRegional && strcasecmp((string) $location->kecamatan, (string) $userWilayah) !== 0) {
             return redirect()->route('admin.locations.index')
-                ->with('error', "Akses Ditolak: Anda hanya berwenang mengelola data di Kecamatan {$userWilayah}.");
+                ->with('error', "Akses Ditolak: Anda hanya berwenang mengelola data di Kecamatan {$userWilayah}. Destinasi '{$location->name}' berada di Kecamatan {$location->kecamatan}.");
         }
 
         $validated = $request->validate([
@@ -279,6 +322,18 @@ class LocationController extends Controller
             'foto' => ['nullable', 'string', 'max:500'],
             'status' => ['nullable', 'in:aktif,nonaktif'],
         ]);
+
+        // Boundary safety check for regional staff
+        if ($isRegional && isset($this->wilayahConfigs[$userWilayah]['bounds'])) {
+            $bounds = $this->wilayahConfigs[$userWilayah]['bounds'];
+            $lat = (float) $validated['latitude'];
+            $lng = (float) $validated['longitude'];
+            if ($lat < $bounds['min_lat'] || $lat > $bounds['max_lat'] || $lng < $bounds['min_lng'] || $lng > $bounds['max_lng']) {
+                return back()->withInput()->withErrors([
+                    'latitude' => "Koordinat [{$lat}, {$lng}] berada di luar batas wilayah tugas Kecamatan {$userWilayah}!",
+                ]);
+            }
+        }
 
         $kecamatan = $isRegional ? $userWilayah : ($request->kecamatan ?: $location->kecamatan);
 
@@ -323,7 +378,7 @@ class LocationController extends Controller
         $isRegional = $user ? $user->isRegional() : false;
         $userWilayah = $user->wilayah ?? '';
 
-        if ($isRegional && $location->kecamatan !== $userWilayah) {
+        if ($isRegional && strcasecmp((string) $location->kecamatan, (string) $userWilayah) !== 0) {
             return redirect()->route('admin.locations.index')
                 ->with('error', "Akses Ditolak: Anda tidak memiliki hak menghapus data di luar wilayah {$userWilayah}.");
         }

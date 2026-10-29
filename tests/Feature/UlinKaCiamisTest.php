@@ -196,6 +196,85 @@ class UlinKaCiamisTest extends TestCase
         $response->assertSessionHas('error');
     }
 
+    public function test_staff_kawali_can_edit_kawali_location_and_cannot_edit_cadas_ngampar(): void
+    {
+        $staffKawali = User::where('username', 'staff_kawali')->first();
+        $kawaliLocation = Location::where('kecamatan', 'Kawali')->first();
+        $cadasNgampar = Location::where('name', 'like', '%Cadas Ngampar%')->first();
+
+        // 1. Staff Kawali CAN view edit form for Kawali destination
+        $responseKawali = $this->actingAs($staffKawali)->get(route('admin.locations.edit', $kawaliLocation->id));
+        $responseKawali->assertStatus(200);
+        $responseKawali->assertSee('Edit Destinasi');
+        $responseKawali->assertSee('pickMap');
+
+        // 2. Staff Kawali CANNOT edit Cadas Ngampar (which is in Sadananya)
+        $responseCadas = $this->actingAs($staffKawali)->get(route('admin.locations.edit', $cadasNgampar->id));
+        $responseCadas->assertRedirect(route('admin.locations.index'));
+        $responseCadas->assertSessionHas('error');
+
+        // 3. Staff Kawali CANNOT update Cadas Ngampar via POST/PUT
+        $responseUpdate = $this->actingAs($staffKawali)->put(route('admin.locations.update', $cadasNgampar->id), [
+            'nama' => 'Illegal Edit Cadas Ngampar',
+            'kategori_id' => $cadasNgampar->category_id,
+            'latitude' => $cadasNgampar->latitude,
+            'longitude' => $cadasNgampar->longitude,
+        ]);
+        $responseUpdate->assertRedirect(route('admin.locations.index'));
+        $responseUpdate->assertSessionHas('error');
+    }
+
+    public function test_staff_sadananya_can_edit_and_update_cadas_ngampar(): void
+    {
+        $staffSadananya = User::where('username', 'staff_sadananya')->first();
+        $cadasNgampar = Location::where('name', 'like', '%Cadas Ngampar%')->first();
+
+        // 1. Staff Sadananya CAN access Cadas Ngampar edit form
+        $responseForm = $this->actingAs($staffSadananya)->get(route('admin.locations.edit', $cadasNgampar->id));
+        $responseForm->assertStatus(200);
+        $responseForm->assertSee('Wisata Cadas Ngampar');
+
+        // 2. Staff Sadananya CAN update name and drag/move coordinates within Sadananya
+        $newLat = -7.248500;
+        $newLng = 108.310200;
+        $responseUpdate = $this->actingAs($staffSadananya)->put(route('admin.locations.update', $cadasNgampar->id), [
+            'nama' => 'Wisata Sungai Cadas Ngampar Terverifikasi',
+            'kategori_id' => $cadasNgampar->category_id,
+            'latitude' => $newLat,
+            'longitude' => $newLng,
+            'alamat' => 'Desa Gunungsari, Kec. Sadananya, Kabupaten Ciamis',
+            'deskripsi' => 'Aliran sungai pegunungan dengan bebatuan eksotis.',
+            'harga' => 'Rp 5.000',
+            'status' => 'aktif',
+        ]);
+
+        $responseUpdate->assertRedirect(route('admin.locations.index'));
+        $responseUpdate->assertSessionHas('success');
+
+        $this->assertDatabaseHas('locations', [
+            'id' => $cadasNgampar->id,
+            'name' => 'Wisata Sungai Cadas Ngampar Terverifikasi',
+            'latitude' => $newLat,
+            'longitude' => $newLng,
+        ]);
+    }
+
+    public function test_regional_staff_cannot_move_pin_outside_wilayah_bounds(): void
+    {
+        $staffKawali = User::where('username', 'staff_kawali')->first();
+        $kawaliLocation = Location::where('kecamatan', 'Kawali')->first();
+
+        // Try to update coordinates to a point far outside Kawali (e.g. Ciamis center -7.326, 108.353)
+        $response = $this->actingAs($staffKawali)->put(route('admin.locations.update', $kawaliLocation->id), [
+            'nama' => $kawaliLocation->name,
+            'kategori_id' => $kawaliLocation->category_id,
+            'latitude' => -7.326694,
+            'longitude' => 108.353192,
+        ]);
+
+        $response->assertSessionHasErrors('latitude');
+    }
+
     public function test_user_can_logout(): void
     {
         $user = User::where('username', 'superadmin')->first();

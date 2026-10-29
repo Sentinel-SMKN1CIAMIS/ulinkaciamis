@@ -10,8 +10,8 @@ $avatar_initial = strtoupper(substr($disp_name, 0, 1));
 ?>
 <aside class="admin-sidebar">
   <div class="sidebar-brand">
-    <div style="width:36px; height:36px; min-width:36px; background:#ffffff; border-radius:8px; display:flex; align-items:center; justify-content:center; padding:3px; box-shadow:0 1px 3px rgba(0,0,0,0.2); flex-shrink:0;">
-      <img src="/ulinkaciamis/assets/images/lambang_ciamis.png" alt="Lambang Kab. Ciamis" style="width:100%; height:100%; object-fit:contain; display:block;" />
+    <div style="height:36px; min-width:36px; background:#ffffff; border-radius:8px; display:flex; align-items:center; justify-content:center; padding:3px 6px; box-shadow:0 1px 3px rgba(0,0,0,0.2); flex-shrink:0;">
+      <img src="/ulinkaciamis/public/images/ulinkaCiamis.webp" alt="UlinKa Ciamis" style="height:26px; width:auto; max-width:65px; object-fit:contain; display:block;" />
     </div>
     <div class="sidebar-brand-text">
       <span class="sidebar-brand-name">UlinKa Ciamis</span>

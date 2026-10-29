@@ -97,11 +97,12 @@ body {
 }
 
 .sidebar-brand {
-  height: var(--topbar-h);
+  min-height: var(--topbar-h);
+  height: auto;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0 20px;
+  padding: 12px 18px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(0, 0, 0, 0.1);
 }
@@ -109,14 +110,10 @@ body {
 .sidebar-logo,
 .sidebar-logo-seal,
 .sidebar-brand img {
-  max-height: 36px;
-  max-width: 36px;
-  width: 36px;
-  height: 36px;
+  max-height: 42px;
+  width: auto;
+  max-width: 140px;
   object-fit: contain;
-  background: #ffffff;
-  padding: 3px;
-  border-radius: var(--radius-sm);
   display: block;
   flex-shrink: 0;
 }
